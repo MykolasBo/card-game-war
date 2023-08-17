@@ -24,10 +24,6 @@ class Player:
         self.hand = hand
         self.name = name
 
-    # check if player has cards
-    #def check_player_cards(self):
-
-
 
 def main():
     deck = DeckOfCards()
@@ -70,7 +66,10 @@ def game_turn(user, computer, war_cards=None):
             war_cards.append(computer.hand.pop())
         except IndexError:
             return
-        game_turn(user, computer, war_cards)
+        try:
+            game_turn(user, computer, war_cards)
+        except IndexError:
+            return
 
 
 if __name__ == "__main__":
