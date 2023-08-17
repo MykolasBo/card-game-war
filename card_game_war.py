@@ -30,29 +30,40 @@ def main():
     player_2 = Player(second_half)
 
 #    starting_player = random.choice([player_1, player_2])
-
-# [Priekis, A, B, C, D, Galas]
-
     while True:
-        if not player_1.hand or not player_2.hand:
+        if not player_1.hand:
+            print("Player 2 has won!")
             break
-        while True:
-            card_1 = player_1.hand.pop()
-            card_2 = player_2.hand.pop()
-            war_cards = []
-            if card_1["value"] > card_2["value"]:
-                player_1.hand.insert(0, card_1)
-                player_1.hand.insert(0, card_2)
-                break
-            elif card_1["value"] < card_2["value"]:
-                player_2.hand.insert(0, card_1)
-                player_2.hand.insert(0, card_2)
-                break
-            else:
-                war_cards.append(card_1)
-                war_cards.append(card_2)
-                war_cards.append(player_1.hand.pop())
-                war_cards.append(player_2.hand.pop())    
+        elif not player_2.hand:
+            print("Player 1 has won!")
+            break
+        else:
+            game_turn(player_1, player_2)
+
+
+def game_turn(player_1, player_2, war_cards=None):
+    if war_cards is None:
+        war_cards = []
+    card_1 = player_1.hand.pop()
+    card_2 = player_2.hand.pop()
+    war_cards.append(card_1)
+    war_cards.append(card_2)
+    if card_1["value"] > card_2["value"]:
+        player_1.hand = war_cards + player_1.hand
+        # player_1.hand.insert(0, card_1)
+        # player_1.hand.insert(0, card_2)
+    elif card_1["value"] < card_2["value"]:
+        player_2.hand = war_cards + player_2.hand
+        # player_2.hand.insert(0, card_1)
+        # player_2.hand.insert(0, card_2)
+    else:
+        try:
+            war_cards.append(player_1.hand.pop())
+            war_cards.append(player_2.hand.pop())
+            game_turn(player_1, player_2, war_cards)
+        except IndexError:
+            return
+
 
 if __name__ == '__main__':
     main()
