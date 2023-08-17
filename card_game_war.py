@@ -1,24 +1,33 @@
 import random
 
+
 class DeckOfCards:
+    suits = ["Hearts", "Diamonds", "Clubs", "Spades"]
+    ranks = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+
     def __init__(self):
-        self.suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades']
-        self.values = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
-        self.deck = [{'suit': suit, 'value': value} for suit in self.suits for value in self.values]
+        self.deck = [
+            {"suit": suit, "rank": rank} for suit in self.suits for rank in self.ranks
+        ]
 
     def shuffle_deck(self):
         random.shuffle(self.deck)
 
     def split_deck(self):
-        middle = int(len(self.deck)/2)
-        first_half = self.deck[:middle]
-        second_half = self.deck[middle:]
+        first_half = self.deck[: int(len(self.deck) / 2)]
+        second_half = self.deck[int(len(self.deck) / 2) :]
         return first_half, second_half
 
+
 class Player:
-    def __init__(self, hand, name="pc"):
+    def __init__(self, hand, name="Computer"):
+        self.hand = hand
         self.name = name
-        self.hand = hand 
+
+    # check if player has cards
+    #def check_player_cards(self):
+
+
 
 def main():
     deck = DeckOfCards()
@@ -26,46 +35,45 @@ def main():
     first_half, second_half = deck.split_deck()
 
     name = input("Please provide your name: ")
-    player_1 = Player(first_half, name)
-    player_2 = Player(second_half)
+    user = Player(first_half, name)
+    computer = Player(second_half)
 
-#    starting_player = random.choice([player_1, player_2])
     while True:
-        if not player_1.hand:
-            print("Player 2 has won!")
+        if not user.hand:
+            print("Computer has won!")
             break
-        elif not player_2.hand:
-            print("Player 1 has won!")
+        elif not computer.hand:
+            print(f"{user.name} has won!")
             break
         else:
-            game_turn(player_1, player_2)
+            game_turn(user, computer)
 
 
-def game_turn(player_1, player_2, war_cards=None):
+def game_turn(user, computer, war_cards=None):
     if war_cards is None:
         war_cards = []
-    card_1 = player_1.hand.pop()
-    card_2 = player_2.hand.pop()
+    card_1 = user.hand.pop()
+    card_2 = computer.hand.pop()
     war_cards.append(card_1)
     war_cards.append(card_2)
-    if card_1["value"] > card_2["value"]:
-        player_1.hand = war_cards + player_1.hand
-        # player_1.hand.insert(0, card_1)
-        # player_1.hand.insert(0, card_2)
-    elif card_1["value"] < card_2["value"]:
-        player_2.hand = war_cards + player_2.hand
-        # player_2.hand.insert(0, card_1)
-        # player_2.hand.insert(0, card_2)
+    if card_1["rank"] > card_2["rank"]:
+        user.hand = war_cards + user.hand
+        # user.hand.insert(0, card_1)
+        # user.hand.insert(0, card_2)
+    elif card_1["rank"] < card_2["rank"]:
+        computer.hand = war_cards + computer.hand
+        # computer.hand.insert(0, card_1)
+        # computer.hand.insert(0, card_2)
     else:
         try:
-            war_cards.append(player_1.hand.pop())
-            war_cards.append(player_2.hand.pop())
-            game_turn(player_1, player_2, war_cards)
+            war_cards.append(user.hand.pop())
+            war_cards.append(computer.hand.pop())
         except IndexError:
             return
+        game_turn(user, computer, war_cards)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
 
         
